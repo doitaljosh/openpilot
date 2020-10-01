@@ -291,7 +291,7 @@ bool send_panda_state(PubMaster *pm, Panda *panda, bool spoofing_started) {
   ps.setPandaType(panda->hw_type);
   ps.setSafetyModel(cereal::CarParams::SafetyModel(pandaState.safety_model));
   ps.setSafetyParam(pandaState.safety_param);
-  ps.setFaultStatus(cereal::PandaState::FaultStatus(pandaState.fault_status));
+  //ps.setFaultStatus(cereal::PandaState::FaultStatus(pandaState.fault_status));
   ps.setPowerSaveEnabled((bool)(pandaState.power_save_enabled));
   ps.setHeartbeatLost((bool)(pandaState.heartbeat_lost));
   ps.setHarnessStatus(cereal::PandaState::HarnessStatus(pandaState.car_harness_status));
@@ -308,6 +308,8 @@ bool send_panda_state(PubMaster *pm, Panda *panda, bool spoofing_started) {
       i++;
     }
   }
+  ps.faults = ps.faults & 0xfffffffe; // mask out relay fault bit
+
   pm->send("pandaState", msg);
 
   return ignition;
@@ -369,7 +371,6 @@ void panda_state_thread(PubMaster *pm, Panda * peripheral_panda, Panda *panda, b
     }
 
     ignition_last = ignition;
-
     panda->send_heartbeat();
     util::sleep_for(500);
   }
