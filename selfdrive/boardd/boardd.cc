@@ -308,7 +308,7 @@ bool send_panda_state(PubMaster *pm, Panda *panda, bool spoofing_started) {
       i++;
     }
   }
-  ps.faults = ps.faults & 0xfffffffe; // mask out relay fault bit
+  pandaState.faults = pandaState.faults & 0xfffffffe; // mask out relay fault bit
 
   pm->send("pandaState", msg);
 
